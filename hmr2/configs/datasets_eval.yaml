@@ -1,0 +1,11 @@
+FREEMAN-TEST:
+    TYPE: ImageDataset_eval
+    DATASET_FILE: hmr2_evaluation_data/freeman_eval.npz
+    IMG_DIR: /data/boning_zhang/HardMoPlus-4DHumans/hmr2_evaluation_data/freeman_eval/
+    KEYPOINT_LIST: [ 0, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 ]
+
+FREEMAN-SIDEVIEW-TEST:
+    TYPE: ImageDataset_eval
+    DATASET_FILE: hmr2_evaluation_data/freeman_sideview.npz
+    IMG_DIR: /data/boning_zhang/HardMoPlus-4DHumans/hmr2_evaluation_data/freeman_sideview/
+    KEYPOINT_LIST: [ 0, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 ]

@@ -1,0 +1,12 @@
+FREEMAN-TRAIN:
+    TYPE: ImageDataset
+    URLS: hmr2_training_data/dataset_tars/freeman-train/{000000..000319}.tar
+FREEMAN-VAL:
+    TYPE: ImageDataset
+    URLS: hmr2_training_data/dataset_tars/freeman-val/{000000..000000}.tar
+HARDMO-TRAIN:
+    TYPE: ImageDataset
+    URLS: hmr2_training_data/dataset_tars/hardmo-train/{000000..000159}.tar
+CMU-MOCAP:
+    DATASET_FILE: hmr2_training_data/cmu_mocap.npz
+
