@@ -1,0 +1,27 @@
+HALF:
+    TYPE: ImageDataset_half
+    DATASET_FILE: /data/boning_zhang/transformed_halfdata_train.npz
+    IMG_DIR: /data/boning_zhang/mask_image_train
+HALFRAW:
+    TYPE: ImageDataset_half
+    DATASET_FILE: /data/boning_zhang/raw_halfdata_train.npz
+    IMG_DIR: /data/boning_zhang/raw_image_train
+
+HALFVAL:
+    TYPE: ImageDataset_half
+    DATASET_FILE: /data/boning_zhang/transformed_halfdata_val.npz
+    IMG_DIR: /data/boning_zhang/mask_image_val
+HALFTEST:
+    TYPE: ImageDataset_half
+    DATASET_FILE: /data/boning_zhang/transformed_halfdata_test.npz
+    IMG_DIR: /data/boning_zhang/mask_image_test
+UBODY:
+    TYPE: ImageDataset_half
+    DATASET_FILE: /data/boning_zhang/ubody_data_train.npz
+    IMG_DIR: /data/boning_zhang/ubody_train_img
+FREEMAN:
+    TYPE: ImageDataset_half
+    DATASET_FILE: /data/boning_zhang/ubody_data_train.npz
+    IMG_DIR: /data/boning_zhang/ubody_train_img
+CMU-MOCAP:
+    DATASET_FILE: hmr2_training_data/cmu_mocap.npz

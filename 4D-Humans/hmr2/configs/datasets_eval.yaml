@@ -1,0 +1,23 @@
+FREEMAN-TEST:
+    TYPE: ImageDataset_eval
+    DATASET_FILE: /data/boning_zhang/Freeman/freeman_eval.npz
+    IMG_DIR: /data/boning_zhang/Freeman/freeman_eval/
+    KEYPOINT_LIST: [ 0, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 ]
+
+HARDMO-TEST:
+    TYPE: ImageDataset_eval
+    DATASET_FILE: /data/boning_zhang/Freeman/hardmo_eval.npz
+    IMG_DIR: /data/boning_zhang/Freeman/hardmo_eval/
+    KEYPOINT_LIST: [ 0, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 ]
+
+HALFTEST:
+    TYPE: ImageDataset_half
+    DATASET_FILE: /data/boning_zhang/transformed_halfdata_test.npz
+    IMG_DIR: /data/boning_zhang/mask_image_test
+    KEYPOINT_LIST: [ 0, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 ] #不知道是什么点
+
+FREEMAN_SCORE_HAMER-TEST:
+    TYPE: ImageDataset
+    DATASET_FILE: /data/boning_zhang/data/freeman_score_hamer_test.npz
+    IMG_DIR: /data/boning_zhang/Freeman/freeman_score_hamer_test_only_pic
+    KEYPOINT_LIST: [ 3,4,6,7 ] 

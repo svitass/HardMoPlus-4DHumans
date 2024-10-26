@@ -1,0 +1,14 @@
+# @package _global_
+defaults:
+  - /data_filtering: low1
+
+DATASETS:
+  TRAIN: 
+    FREEMAN-TRAIN:
+      WEIGHT: 0.5
+    HARDMO-TRAIN:
+      WEIGHT: 0.5
+  VAL:
+    FREEMAN-VAL:
+      WEIGHT: 1
+  MOCAP: CMU-MOCAP

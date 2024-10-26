@@ -1,0 +1,14 @@
+# @package _global_
+defaults:
+  - /data_filtering: low1
+
+DATASETS:
+  TRAIN: 
+    FREEMAN_SCORE_HAMER-TRAIN:
+      WEIGHT: 0.5
+    HARDMO_SCORE_HAMER:
+      WEIGHT: 0.5
+  VAL:
+    FREEMAN_SCORE_HAMER-TEST:
+      WEIGHT: 1
+  MOCAP: CMU-MOCAP
