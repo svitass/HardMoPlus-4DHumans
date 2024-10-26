@@ -1,0 +1,8 @@
+FREEMAN-TRAIN:
+    TYPE: ImageDataset
+    URLS: hamer_training_data/dataset_tars/freeman-small-train/{000000..000116}.tar
+FREEMAN-VAL:
+    TYPE: ImageDataset
+    URLS: hamer_training_data/dataset_tars/freeman-small-val/{000000..000013}.tar
+FREIHAND-MOCAP:
+    DATASET_FILE: hamer_training_data/freihand_mocap.npz

@@ -1,0 +1,13 @@
+# @package _global_
+defaults:
+  - /data_filtering: low1
+
+DATASETS:
+  TRAIN: 
+    FREEMAN-TRAIN:
+      WEIGHT: 1.0
+  VAL:
+    FREEMAN-VAL:
+      WEIGHT: 1.0
+
+  MOCAP: FREIHAND-MOCAP
