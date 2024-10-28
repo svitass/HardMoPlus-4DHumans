@@ -83,6 +83,10 @@ bash scripts/eval_freeman.sh
 bash scripts/eval_freeman_sideview.sh
 ```
 
+## License
+The dataset is under CC BY-SA 4.0 license.
+
+
 ## Acknowledgments
 
 We want to thank the following contributors that our code is based on:
