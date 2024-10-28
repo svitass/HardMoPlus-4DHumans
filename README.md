@@ -83,6 +83,17 @@ bash scripts/eval_freeman.sh
 bash scripts/eval_freeman_sideview.sh
 ```
 
+##  Dataset preprocess
+### 1. Optimize motion from hardmo subset with 2d keypoints guidance
+```shell
+python data_processes/hardmo_motion_optimize.py 
+```
+### 2. Optimize motion from freeman subset with 2d keypoints guidance and multiview guidance
+```shell
+python data_processes/freeman_motion_optimize.py
+```
+
+
 ## License
 The dataset is under CC BY-SA 4.0 license.
 
