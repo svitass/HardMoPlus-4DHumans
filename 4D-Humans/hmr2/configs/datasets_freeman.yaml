@@ -1,0 +1,22 @@
+FREEMAN-TRAIN:
+    TYPE: ImageDataset
+    URLS: hmr2_training_data/dataset_tars/freeman-train/{000000..000319}.tar
+FREEMAN-VAL:
+    TYPE: ImageDataset
+    URLS: hmr2_training_data/dataset_tars/freeman-val/{000000..000000}.tar
+    KEYPOINT_LIST: [0]
+HARDMO-TRAIN:
+    TYPE: ImageDataset
+    URLS: hmr2_training_data/dataset_tars/hardmo-train/{000000..000159}.tar
+CMU-MOCAP:
+    DATASET_FILE: hmr2_training_data/cmu_mocap.npz
+
+FREEMAN_SCORE_HAMER-TRAIN:
+    TYPE: ImageDataset
+    URLS: hmr2_training_data/dataset_tars/freeman_score_hamer-train/{000000..000139}.tar
+FREEMAN_SCORE_HAMER-TEST:
+    TYPE: ImageDataset
+    URLS: hmr2_training_data/dataset_tars/freeman_score_hamer-test/{000000..000000}.tar
+HARDMO_SCORE_HAMER:
+    TYPE: ImageDataset
+    URLS: hmr2_training_data/dataset_tars/hardmo_score_hamer/{000000..000157}.tar

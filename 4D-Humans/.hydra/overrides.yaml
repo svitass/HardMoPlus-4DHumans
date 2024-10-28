@@ -1,0 +1,5 @@
+- exp_name=finetune_on_hardmoplus
+- data=freeman_score_hamer
+- experiment=hmr_vit_transformer
+- trainer=ddp
+- launcher=local

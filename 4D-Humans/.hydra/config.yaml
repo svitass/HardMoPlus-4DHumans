@@ -1,0 +1,123 @@
+task_name: freeman_score_hamer
+tags:
+- freeman dataset after scorehmr and hamer to finetune human4d
+train: true
+test: false
+ckpt_path: null
+seed: null
+DATASETS:
+  SUPPRESS_KP_CONF_THRESH: 0.3
+  FILTER_NUM_KP: 4
+  FILTER_NUM_KP_THRESH: 0.0
+  FILTER_REPROJ_THRESH: 31000
+  SUPPRESS_BETAS_THRESH: 3.0
+  SUPPRESS_BAD_POSES: true
+  POSES_BETAS_SIMULTANEOUS: true
+  FILTER_NO_POSES: false
+  TRAIN:
+    FREEMAN_SCORE_HAMER-TRAIN:
+      WEIGHT: 0.5
+    HARDMO_SCORE_HAMER:
+      WEIGHT: 0.5
+  VAL:
+    FREEMAN_SCORE_HAMER-TEST:
+      WEIGHT: 1
+  MOCAP: CMU-MOCAP
+  BETAS_REG: true
+  CONFIG:
+    SCALE_FACTOR: 0.3
+    ROT_FACTOR: 30
+    TRANS_FACTOR: 0.02
+    COLOR_SCALE: 0.2
+    ROT_AUG_RATE: 0.6
+    TRANS_AUG_RATE: 0.5
+    DO_FLIP: true
+    FLIP_AUG_RATE: 0.5
+    EXTREME_CROP_AUG_RATE: 0.1
+    EXTREME_CROP_AUG_LEVEL: 1
+trainer:
+  _target_: pytorch_lightning.Trainer
+  default_root_dir: ${paths.output_dir}
+  accelerator: gpu
+  devices: 7
+  deterministic: false
+  num_sanity_val_steps: 0
+  log_every_n_steps: ${GENERAL.LOG_STEPS}
+  val_check_interval: ${GENERAL.VAL_STEPS}
+  precision: 16
+  max_steps: ${GENERAL.TOTAL_STEPS}
+  limit_val_batches: 1
+  strategy: ddp
+  num_nodes: 1
+  sync_batchnorm: true
+paths:
+  root_dir: ${oc.env:PROJECT_ROOT}
+  data_dir: ${paths.root_dir}/data/
+  log_dir: logs/
+  output_dir: ${hydra:runtime.output_dir}
+  work_dir: ${hydra:runtime.cwd}
+extras:
+  ignore_warnings: false
+  enforce_tags: true
+  print_config: true
+exp_name: finetune_on_hardmoplus
+SMPL:
+  MODEL_PATH: data/smpl
+  GENDER: neutral
+  NUM_BODY_JOINTS: 23
+  JOINT_REGRESSOR_EXTRA: data/SMPL_to_J19.pkl
+  MEAN_PARAMS: data/smpl_mean_params.npz
+EXTRA:
+  FOCAL_LENGTH: 5000
+  NUM_LOG_IMAGES: 4
+  NUM_LOG_SAMPLES_PER_IMAGE: 8
+  PELVIS_IND: 39
+GENERAL:
+  TOTAL_STEPS: 1000000
+  LOG_STEPS: 1000
+  VAL_STEPS: 200
+  CHECKPOINT_STEPS: 1000
+  CHECKPOINT_SAVE_TOP_K: 10
+  NUM_WORKERS: 0
+  PREFETCH_FACTOR: 2
+TRAIN:
+  LR: 1.0e-05
+  WEIGHT_DECAY: 0.0001
+  BATCH_SIZE: 36
+  LOSS_REDUCTION: mean
+  NUM_TRAIN_SAMPLES: 2
+  NUM_TEST_SAMPLES: 64
+  POSE_2D_NOISE_RATIO: 0.01
+  SMPL_PARAM_NOISE_RATIO: 0.005
+MODEL:
+  IMAGE_SIZE: 256
+  IMAGE_MEAN:
+  - 0.485
+  - 0.456
+  - 0.406
+  IMAGE_STD:
+  - 0.229
+  - 0.224
+  - 0.225
+  BACKBONE:
+    TYPE: vit
+    PRETRAINED_WEIGHTS: hmr2_training_data/vitpose_backbone.pth
+  SMPL_HEAD:
+    TYPE: transformer_decoder
+    IN_CHANNELS: 2048
+    TRANSFORMER_DECODER:
+      depth: 6
+      heads: 8
+      mlp_dim: 1024
+      dim_head: 64
+      dropout: 0.0
+      emb_dropout: 0.0
+      norm: layer
+      context_dim: 1280
+LOSS_WEIGHTS:
+  KEYPOINTS_3D: 0.05
+  KEYPOINTS_2D: 0.01
+  GLOBAL_ORIENT: 0.001
+  BODY_POSE: 0.001
+  BETAS: 0.0005
+  ADVERSARIAL: 0.0005

@@ -1,0 +1,17 @@
+# @package _global_
+defaults:
+  - /data_filtering: low1
+
+DATASETS:
+  TRAIN: 
+    # HALF:
+    #   WEIGHT: 0.4
+    # HALFRAW:
+    #   WEIGHT: 0.3
+    UBODY:
+      WEIGHT: 1.0
+  VAL:
+    HALFTEST:
+      WEIGHT: 1.0
+
+  MOCAP: CMU-MOCAP

@@ -1,0 +1,12 @@
+defaults:
+  - /data_filtering: low1
+
+DATASETS:
+  TRAIN: 
+    FREIHAND-TRAIN:
+      WEIGHT: 0.25
+  VAL:
+    FREIHAND-TRAIN:
+      WEIGHT: 1.0
+
+  MOCAP: FREIHAND-MOCAP
