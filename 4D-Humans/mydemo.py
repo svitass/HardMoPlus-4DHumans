@@ -20,8 +20,8 @@ def main():
     start = time.time()
     parser = argparse.ArgumentParser(description='HMR2 demo code')
     parser.add_argument('--checkpoint', type=str, default=DEFAULT_CHECKPOINT, help='Path to pretrained model checkpoint')
-    parser.add_argument('--img_folder', type=str, default='/data/boning_zhang/blend_body_hand_pipline/example_data', help='Folder with input images')
-    parser.add_argument('--out_folder', type=str, default='/data/boning_zhang/blend_body_hand_pipline/demo_out', help='Output folder to save rendered results')
+    parser.add_argument('--img_folder', type=str, default='../HandBody-fusion/example_data', help='Folder with input images')
+    parser.add_argument('--out_folder', type=str, default='../HandBody-fusion/demo_out', help='Output folder to save rendered results')
     parser.add_argument('--side_view', dest='side_view', action='store_true', default=False, help='If set, render side view also')
     parser.add_argument('--top_view', dest='top_view', action='store_true', default=False, help='If set, render top view also')
     parser.add_argument('--full_frame', dest='full_frame', action='store_true', default=True, help='If set, render all people together also')
@@ -66,19 +66,40 @@ def main():
         detectron2_cfg.model.roi_heads.box_predictor.test_nms_thresh   = 0.4
         detector       = DefaultPredictor_Lazy(detectron2_cfg)
 
+    # def get_smplx_faces(v2020=True):
+    #     SMPL_MODEL_DIR="/data/boning_zhang/PyMAF-X/data/smpl"
+    #     import sys
+    #     sys.path.append('/data/boning_zhang/PyMAF-X/models')
+    #     sys.path.append('/data/boning_zhang/PyMAF-X')
+    #     # 导入目标模块
+    #     from smpl import SMPLX
+    #     smplx = SMPLX(os.path.join(SMPL_MODEL_DIR, 'SMPLX_NEUTRAL_2020.npz'), batch_size=1)
+    #     return smplx.faces
+    # faces = get_smplx_faces() #要是array n*3的
+    # Setup the renderer
+    #renderer = Renderer(model_cfg,faces)
     renderer = Renderer(model_cfg, faces=model.smpl.faces)
-
+    # Make output directory if it does not exist
     os.makedirs(args.out_folder, exist_ok=True)
     import joblib
-    data =joblib.load("../results/output.pkl") 
+    data =joblib.load("../HandBody-fusion/output.pkl") 
+    #pred_vertices =data['smplx_verts']
     pred_vertices =data['verts']
-    image_dir ="../results/example_vis"         
+    # pdb.set_trace()
+    image_dir ="../HandBody-fusion/example_vis"         
+    # 获取目录中所有文件的列表
     file_list = os.listdir(image_dir)
+
+    # 过滤出所有图片文件（假设图片格式为 jpg, png 等）
     image_files = sorted([f for f in file_list if f.endswith(('.jpg', '.png', '.jpeg', '.bmp', '.gif'))])
+    # Iterate over all images in folder
     for n, image_file in enumerate(image_files):
         image_path = os.path.join(image_dir, image_file)
         img_cv2 = cv2.imread(str(image_path))
+
+        # Detect humans in image
         det_out = detector(img_cv2)
+
         det_instances = det_out['instances']
         valid_idx = (det_instances.pred_classes==0) & (det_instances.scores > 0.5)
         if not args.notonlyone:
@@ -95,7 +116,9 @@ def main():
         else:
             boxes=det_instances.pred_boxes.tensor[valid_idx].cpu().numpy()
 
+        # Run HMR2.0 on all detected humans
         dataset = ViTDetDataset(model_cfg, img_cv2, boxes)
+        # 这里把bbox crop出来并且归一化了，图片被归一化
         dataloader = torch.utils.data.DataLoader(dataset, batch_size=8, shuffle=False, num_workers=0)
 
         all_verts = []
@@ -112,22 +135,25 @@ def main():
             img_size = batch["img_size"].float()
             scaled_focal_length = model_cfg.EXTRA.FOCAL_LENGTH / model_cfg.MODEL.IMAGE_SIZE * img_size.max()
             pred_cam_t_full = cam_crop_to_full(pred_cam, box_center, box_size, img_size, scaled_focal_length).detach().cpu().numpy()
-            batch_size =1
+            
+            # Render the result
+            batch_size = 1
+            
             for m in range(batch_size):
                 img_fn, _ = os.path.splitext(os.path.basename(image_path))
                 person_id = int(batch['personid'][m])
                 white_img = (torch.ones_like(batch['img'][m]).cpu() - DEFAULT_MEAN[:,None,None]/255) / (DEFAULT_STD[:,None,None]/255)
                 input_patch = batch['img'][m].cpu() * (DEFAULT_STD[:,None,None]/255) + (DEFAULT_MEAN[:,None,None]/255)
                 input_patch = input_patch.permute(1,2,0).numpy()
-               #pdb.set_trace()
-                
                 regression_img = renderer(pred_vertices[n],
                                         out['pred_cam_t'][m].detach().cpu().numpy(),
                                         batch['img'][m],
                                         mesh_base_color=LIGHT_BLUE,
                                         scene_bg_color=(1, 1, 1),
                                         )
+
                 final_img = np.concatenate([input_patch, regression_img], axis=1)
+
                 if args.side_view:
                     side_img = renderer(pred_vertices[n],
                                             out['pred_cam_t'][m].detach().cpu().numpy(),
