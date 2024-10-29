@@ -20,6 +20,7 @@ def main():
     start = time.time()
     parser = argparse.ArgumentParser(description='HMR2 demo code')
     parser.add_argument('--checkpoint', type=str, default=DEFAULT_CHECKPOINT, help='Path to pretrained model checkpoint')
+    parser.add_argument('--save_smpl_path', type=str, default="../HandBody-fusion/4dhuman_out.pkl", help='Path to save smpl parameters')
     parser.add_argument('--img_folder', type=str, default='example_data/images', help='Folder with input images')
     parser.add_argument('--out_folder', type=str, default='demo_out', help='Output folder to save rendered results')
     parser.add_argument('--side_view', dest='side_view', action='store_true', default=False, help='If set, render side view also')
@@ -160,7 +161,7 @@ def main():
                     tmesh = renderer.vertices_to_trimesh(verts, camera_translation, LIGHT_BLUE)
                     tmesh.export(os.path.join(args.out_folder, f'{img_fn}_{person_id}.obj'))
             if args.save_smpl:
-                file_path = '/data/boning_zhang/blend_body_hand_pipline/4dhuman_out.pkl'
+                file_path = args.save_smpl_path
                 try:
                     with open(file_path, 'rb') as f:
                         existing_data = pickle.load(f)
@@ -205,5 +206,4 @@ def main():
         print(end - start)
 
 if __name__ == '__main__':
-    os.environ["CUDA_VISIBLE_DEVICES"] = "7,1,2,3,4,5,6,0"
     main()
