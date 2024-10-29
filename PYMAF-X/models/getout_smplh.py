@@ -64,8 +64,8 @@ def get_out_smplh(input_batch={}, J_regressor=None, rw_cam={}):
         pred_vis_lhand = input_batch['vis_lhand'] > cfg.MODEL.PyMAF.HAND_VIS_TH
     if 'vis_rhand' in input_batch:
         pred_vis_rhand = input_batch['vis_rhand'] > cfg.MODEL.PyMAF.HAND_VIS_TH
-    file1="/data/boning_zhang/blend_body_hand_pipline/hamer_out.pkl"
-    file2="/data/boning_zhang/blend_body_hand_pipline/4dhuman_out.pkl"
+    file1="../HandBody-fusion/hamer_out.pkl"
+    file2="../HandBody-fusion/4dhuman_out.pkl"
     data1=joblib.load(file1)
     # mano_global_orient
     # torch.Size([2, 1, 3, 3])
@@ -104,10 +104,10 @@ def get_out_smplh(input_batch={}, J_regressor=None, rw_cam={}):
 
     smpl = SMPL_Family(model_type='smpl')
     from models.body_model import SMPLH
-    smplh =SMPLH(model_path="/data/boning_zhang/PyMAF-X/data/smpl/SMPLH_NEUTRAL.pkl",#"/data/boning_zhang/PyMAF-X/smplx/out_put_2/SMPLH_male.pkl",
+    smplh =SMPLH(model_path="./data/smpl/SMPLH_NEUTRAL.pkl",
                         batch_size=batch_size,
                         use_pca=False,
-                        )#num_expression_coeffs=cfg.MODEL.N_EXP,use_pca=False  /data/boning_zhang/PyMAF-X/data/smpl/SMPLH_NEUTRAL.pkl
+                        )
     smplx = SMPL_Family(model_type='smplx', 
                                 model_path=join(path_config.SMPL_MODEL_DIR, 'SMPLX_NEUTRAL_2020.npz'),
                                 num_expression_coeffs=cfg.MODEL.N_EXP)
@@ -199,32 +199,7 @@ def get_out_smplh(input_batch={}, J_regressor=None, rw_cam={}):
         **smplx_kwargs,
     )
     
-    # def batch_rotation_matrix_to_angle_axis(pred_rotmat):
 
-    #     batch_size = pred_rotmat.shape[0]
-    #     body_pose_list = []
-    #     for i in range(batch_size):
-    #         body_pose_i = rotation_matrix_to_angle_axis(pred_rotmat[i].reshape(-1, 3, 3).to('cpu')).reshape(1, -1)
-    #         body_pose_list.append(body_pose_i)
-    #     body_pose = torch.cat(body_pose_list, dim=0)
-    #     return body_pose
-
-    # betas=pred_shape.to('cpu')#B*10
-    # # body_pose=batch_rotation_matrix_to_angle_axis(pred_rotmat[:,1:-2,:,:]).reshape(batch_size,-1)
-    # # global_orient=batch_rotation_matrix_to_angle_axis(pred_rotmat[:,0:1,:,:]).reshape(batch_size,-1)
-    # body_pose=batch_rotation_matrix_to_angle_axis(pred_rotmat)[:,3:-6].reshape(batch_size,-1)
-    # global_orient=batch_rotation_matrix_to_angle_axis(pred_rotmat)[:,:3].reshape(batch_size,-1)
-    # left_hand_pose=batch_rotation_matrix_to_angle_axis(smplx_kwargs['left_hand_pose']).reshape(batch_size,-1)
-    # right_hand_pose=batch_rotation_matrix_to_angle_axis(smplx_kwargs['right_hand_pose']).reshape(batch_size,-1)
-    # #pdb.set_trace()
-    # pred_output = smplh(
-    #     betas=betas,
-    #     body_pose=body_pose,
-    #     global_orient=global_orient,
-    #     left_hand_pose=left_hand_pose, 
-    #     right_hand_pose=right_hand_pose,
-    # )
-    #pdb.set_trace()
     pred_vertices = pred_output.vertices.to(device)
     pred_joints = pred_output.joints.to(device)
 
