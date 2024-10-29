@@ -22,7 +22,7 @@ cd ../hamer/
 python demo_onlyone.py --img_folder "$img_folder"  --batch_size=48 --save_smpl --save_mano_path "../HandBody-fusion/hamer_out.pkl"
 conda deactivate
 
-source activate 4D_humans_copy_1.6
+source activate human4d
 cd ../4D-Humans/
 python demo_onlyone.py --img_folder "$img_folder" --batch_size=48 --save_smpl --checkpoint "$checkpoint_human4d" --save_smpl_path "../HandBody-fusion/4dhuman_out.pkl"
 conda deactivate 
@@ -32,6 +32,6 @@ cd ../PyMAF-X
 python -m apps.render_arms --image_folder "$img_folder" --detection_threshold 0.3 --pretrained_model data/pretrained_model/PyMAF-X_model_checkpoint_v1.1.pt --misc TRAIN.BHF_MODE full_body MODEL.PyMAF.HAND_VIS_TH 0.1 --no_render --output_folder ../HandBody-fusion
 conda deactivate
 
-source activate 4D_humans_copy_1.6
+source activate human4d
 cd ../4D-Humans
 python mydemo.py --checkpoint "$checkpoint_human4d"
