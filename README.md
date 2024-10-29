@@ -92,7 +92,12 @@ python data_processes/hardmo_motion_optimize.py
 ```shell
 python data_processes/freeman_motion_optimize.py
 ```
-
+### 3. Merge the hand and body parts using an elbow rotation compensation strategy
+First, you need to configure the environments separately following the instructions for [HaMer](https://github.com/geopavlakos/hamer) and [PyMAF-X](https://github.com/HongwenZhang/PyMAF-X), naming the environments 'hamer' and 'pymaf-x' respectively. Then, run the following code.
+'''shell
+cd HandBody-fusion
+bash blend.sh
+'''
 
 ## License
 The dataset is under CC BY-SA 4.0 license.
