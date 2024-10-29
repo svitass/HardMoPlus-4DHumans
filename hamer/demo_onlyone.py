@@ -23,6 +23,7 @@ from typing import Dict, Optional
 def main():
     parser = argparse.ArgumentParser(description='HaMeR demo code')
     parser.add_argument('--checkpoint', type=str, default=DEFAULT_CHECKPOINT, help='Path to pretrained model checkpoint')
+    parser.add_argument('--save_mano_path', type=str, default="../HandBody-fusion/hamer_out.pkl", help='Path to save mano parameters')
     parser.add_argument('--img_folder', type=str, default='images', help='Folder with input images')
     parser.add_argument('--out_folder', type=str, default='out_demo', help='Output folder to save rendered results')
     parser.add_argument('--side_view', dest='side_view', action='store_true', default=False, help='If set, render side view also')
@@ -38,11 +39,9 @@ def main():
     parser.add_argument('--notonlyone',dest='notonlyone', action='store_true', default=False, help='If set, use cpu')
     args = parser.parse_args()
 
-    # Download and load checkpoints
     download_models(CACHE_DIR_HAMER)
     model, model_cfg = load_hamer(args.checkpoint)
 
-    # Setup HaMeR model
     if args.cpu:
         device = torch.device('cpu')
     else:
@@ -88,7 +87,7 @@ def main():
 
         # Detect humans in image
         det_out = detector(img_cv2)
-        img = img_cv2.copy()[:, :, ::-1]#BGR变RGB
+        img = img_cv2.copy()[:, :, ::-1]
 
         det_instances = det_out['instances']
         valid_idx = (det_instances.pred_classes==0) & (det_instances.scores > 0.5)
@@ -96,14 +95,10 @@ def main():
             boxes = det_instances.pred_boxes.tensor[valid_idx]
             scores = det_instances.scores[valid_idx]
             if len(boxes) > 0:
-                # 计算每个 bbox 的面积：面积 = (x2 - x1) * (y2 - y1)
                 areas = (boxes[:, 2] - boxes[:, 0]) * (boxes[:, 3] - boxes[:, 1])
-                # 找到面积最大的 bbox 的索引
                 max_area_index = areas.argmax()
                 valid_idx = valid_idx.cpu()
-                # 更新 valid_idx 只保留面积最大的 bbox   
                 new_valid_idx = np.zeros_like(valid_idx, dtype=bool)
-            
                 new_valid_idx[np.where(valid_idx)[0][max_area_index]] = True
                 pred_bboxes=det_instances.pred_boxes.tensor[new_valid_idx].cpu().numpy()
                 pred_scores=det_instances.scores[new_valid_idx].cpu().numpy()
@@ -113,8 +108,6 @@ def main():
         else:
             pred_bboxes=det_instances.pred_boxes.tensor[valid_idx].cpu().numpy()
             pred_scores=det_instances.scores[valid_idx].cpu().numpy()
-
-        # Detect human keypoints for each person
         vitposes_out = cpm.predict_pose(
             img,
             [np.concatenate([pred_bboxes, pred_scores[:, None]], axis=1)],
@@ -161,7 +154,7 @@ def main():
             with torch.no_grad():
                 out = model(batch)
             if args.save_smpl:
-                file_path = '/data/boning_zhang/blend_body_hand_pipline/hamer_out.pkl'
+                file_path = args.save_mano_path
                 try:
                     with open(file_path, 'rb') as f:
                         existing_data = pickle.load(f)
@@ -182,7 +175,6 @@ def main():
                                 existing_data[new_key] = torch.cat((existing_data[new_key], son_dict[sub_key]), dim=0)    
                             else:
                                 existing_data[new_key] = son_dict[sub_key]
-                # 写入文件，覆盖原有文件
                 with open(file_path, 'wb') as f:
                     pickle.dump(existing_data, f) 
             multiplier = (2*batch['right']-1)
@@ -255,17 +247,6 @@ def main():
             input_img_overlay = input_img[:,:,:3] * (1-cam_view[:,:,3:]) + cam_view[:,:,:3] * cam_view[:,:,3:]
 
             cv2.imwrite(os.path.join(args.out_folder, f'{img_fn}_all.jpg'), 255*input_img_overlay[:, :, ::-1])
-    
-    
-    '''        output = {}
-        output['pred_cam'] = pred_cam
-        output['pred_mano_params'] = {k: v.clone() for k,v in pred_mano_params.items()}
-        pred_mano_params['global_orient'] pred_mano_params['hand_pose'] pred_mano_params['betas'] 
-        output['pred_cam_t'] = pred_cam_t
-        output['focal_length'] = focal_length
-        output['pred_keypoints_3d'] = pred_keypoints_3d.reshape(batch_size, -1, 3)
-        output['pred_vertices'] = pred_vertices.reshape(batch_size, -1, 3)
-        output['pred_keypoints_2d'] = pred_keypoints_2d.reshape(batch_size, -1, 2)'''
     
 if __name__ == '__main__':
     main()
