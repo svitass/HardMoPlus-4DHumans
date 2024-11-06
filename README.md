@@ -40,7 +40,7 @@ Here we list some checkpoints to evaluate model.
 |----------|------------------|---------------------|
 | HMR      | HardMo           | [HMR-HardMo](https://pan.baidu.com/s/1gQuf7DUWAzF3zLv4F4bf8Q?pwd=yr47)      |
 | 4DHumans | HardMo           | [HMR2-HardMo](https://pan.baidu.com/s/1XcHmYGetGEooWq_czKsvIw?pwd=6c79)     |
-| 4DHumans | HardMo++         | [HMR2-HardMoPlus]() |
+| 4DHumans | HardMo++         | [HMR2-HardMoPlus](https://pan.baidu.com/s/1msuwx5eYVQG_vHbuJJS7XA?pwd=vbp7) |
 
 
 ## Quick Start
